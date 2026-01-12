@@ -1,0 +1,268 @@
+:root {
+  --primary-bg: #0b1020;
+  --secondary-bg: rgba(255, 255, 255, 0.7);
+  --tertiary-bg: rgba(255, 255, 255, 0.5);
+  --primary-text: rgba(255, 255, 255, 0.92);
+  --secondary-text: rgba(255, 255, 255, 0.7);
+  --accent-color: #6ea8ff;
+  --accent-hover: #8fbaff;
+  --border-color: rgba(255, 255, 255, 0.18);
+
+  --glass-blur: 18px;
+  --glass-bg: rgba(18, 24, 44, 0.55);
+  --glass-bg-strong: rgba(18, 24, 44, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.22);
+
+  --shadow-light: rgba(0, 0, 0, 0.18);
+  --shadow-medium: rgba(0, 0, 0, 0.28);
+  --shadow-heavy: rgba(0, 0, 0, 0.42);
+
+  --window-bg: var(--glass-bg);
+  --window-border: var(--glass-border);
+  --titlebar-bg: rgba(255, 255, 255, 0.06);
+  --titlebar-text: var(--primary-text);
+  --titlebar-hover: rgba(255, 255, 255, 0.08);
+
+  --taskbar-bg: rgba(18, 24, 44, 0.45);
+  --taskbar-text: var(--primary-text);
+  --taskbar-hover: rgba(255, 255, 255, 0.08);
+
+  /* Status Colors */
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Z-Index Layers */
+  --z-desktop: 1;
+  --z-window-base: 100;
+  --z-taskbar: 900;
+  --z-context-menu: 950;
+  --z-modal: 1000;
+}
+
+[data-theme="dark"] {
+  --primary-bg: #0b1020;
+  --primary-text: rgba(255, 255, 255, 0.92);
+  --secondary-text: rgba(255, 255, 255, 0.68);
+  --accent-color: #6ea8ff;
+  --accent-hover: #8fbaff;
+}
+
+/* ==================== RESET & BASE STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  color: var(--primary-text);
+  background-color: var(--primary-bg);
+  height: 100%;
+  overflow: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.hidden {
+  display: none !important;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.dragging {
+  cursor: move !important;
+  opacity: 0.9;
+}
+
+.resizing {
+  cursor: nwse-resize !important;
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-normal);
+}
+
+.fade-out {
+  animation: fadeOut var(--transition-normal);
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-normal);
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tertiary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-text);
+}
+
+/* ==================== BUTTON BASE STYLES ==================== */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--transition-fast);
+}
+
+button:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== INPUT BASE STYLES ==================== */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--primary-text);
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  transition: border-color var(--transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* ==================== LOADING SCREEN ==================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--primary-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: var(--spacing-lg);
+  font-size: 1.2rem;
+  color: var(--secondary-text);
+}

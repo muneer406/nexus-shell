@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nexus Shell - A browser-based desktop environment built with Vanilla JavaScript">
+    <title>Nexus Shell</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/window.css">
+    <link rel="stylesheet" href="css/apps.css">
+</head>
+
+<body>
+    <div id="desktop" class="desktop">
+        <div id="desktop-icons" class="desktop-icons"></div>
+        <div id="windows-container" class="windows-container"></div>
+        <div id="context-menu" class="context-menu hidden">
+            <ul class="context-menu-list"></ul>
+        </div>
+    </div>
+
+    <div id="taskbar" class="taskbar">
+        <div class="taskbar-inner">
+            <div class="taskbar-center">
+                <button id="start-button" class="start-button" aria-label="Start Menu" title="Start">
+                    <span class="start-icon" aria-hidden="true">N</span>
+                    <span class="start-text">Nexus</span>
+                </button>
+                <div id="taskbar-items" class="taskbar-items"></div>
+            </div>
+
+            <div class="system-tray">
+                <span id="clock" class="clock">12:00 PM</span>
+            </div>
+        </div>
+
+        <div id="start-menu" class="start-menu hidden" role="menu" aria-label="Start Menu">
+            <div class="start-menu-header">
+                <h3>Apps</h3>
+            </div>
+            <div class="start-menu-apps">
+                <button class="app-launcher" data-app="terminal">
+                    <span class="app-icon app-icon--terminal" aria-hidden="true">T</span>
+                    <span class="app-name">Terminal</span>
+                </button>
+                <button class="app-launcher" data-app="file-explorer">
+                    <span class="app-icon app-icon--files" aria-hidden="true">F</span>
+                    <span class="app-name">File Explorer</span>
+                </button>
+                <button class="app-launcher" data-app="system-monitor">
+                    <span class="app-icon app-icon--monitor" aria-hidden="true">S</span>
+                    <span class="app-name">System Monitor</span>
+                </button>
+                <button class="app-launcher" data-app="settings">
+                    <span class="app-icon app-icon--settings" aria-hidden="true">C</span>
+                    <span class="app-name">Settings</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

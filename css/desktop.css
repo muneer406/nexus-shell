@@ -1,0 +1,401 @@
+.desktop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 72px;
+  background-image: radial-gradient(
+      1200px circle at 10% 10%,
+      rgba(110, 168, 255, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px circle at 85% 20%,
+      rgba(255, 135, 215, 0.28),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px circle at 40% 110%,
+      rgba(71, 255, 209, 0.18),
+      transparent 55%
+    ),
+    linear-gradient(135deg, #0b1020 0%, #0e1b3e 55%, #140a2d 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  z-index: var(--z-desktop);
+}
+
+.desktop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      1200px circle at 20% 30%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px circle at 70% 60%,
+      rgba(255, 255, 255, 0.04),
+      transparent 60%
+    );
+  opacity: 0.8;
+}
+
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 80px);
+  grid-auto-rows: 100px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  pointer-events: none;
+}
+
+.windows-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.windows-container > * {
+  pointer-events: auto;
+}
+
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  z-index: var(--z-taskbar);
+}
+
+.taskbar-inner {
+  height: 48px;
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: var(--taskbar-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 35px var(--shadow-heavy);
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.taskbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Start Button */
+.start-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--taskbar-text);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  transition: transform var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.start-button:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.start-button.active {
+  background-color: rgba(110, 168, 255, 0.22);
+  border-color: rgba(110, 168, 255, 0.32);
+}
+
+.start-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.start-text {
+  display: none;
+}
+
+/* Start Menu */
+.start-menu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 78px;
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(560px, calc(100vh - 110px));
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 55px var(--shadow-heavy);
+  backdrop-filter: blur(var(--glass-blur));
+  overflow: hidden;
+  animation: slideUp var(--transition-normal);
+}
+
+.start-menu-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.start-menu-header h3 {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--primary-text);
+  letter-spacing: 0.2px;
+}
+
+.start-menu-apps {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.app-launcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  background-color: transparent;
+  border-radius: 14px;
+  text-align: left;
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast);
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-launcher:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.app-launcher .app-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  line-height: 1;
+}
+
+.app-icon--terminal {
+  background: rgba(110, 168, 255, 0.18);
+  border-color: rgba(110, 168, 255, 0.28);
+}
+
+.app-icon--files {
+  background: rgba(71, 255, 209, 0.14);
+  border-color: rgba(71, 255, 209, 0.22);
+}
+
+.app-icon--monitor {
+  background: rgba(255, 135, 215, 0.14);
+  border-color: rgba(255, 135, 215, 0.22);
+}
+
+.app-icon--settings {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.app-launcher .app-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+
+/* Taskbar Items (Open Windows) */
+.taskbar-items {
+  display: flex;
+  gap: 6px;
+  flex: 0 1 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0;
+  max-width: min(760px, calc(100vw - 260px));
+}
+
+.taskbar-items::-webkit-scrollbar {
+  height: 4px;
+}
+
+.taskbar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--taskbar-text);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  min-width: 140px;
+  max-width: 240px;
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.taskbar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.taskbar-item.active {
+  background-color: rgba(110, 168, 255, 0.18);
+  border-color: rgba(110, 168, 255, 0.28);
+}
+
+.taskbar-item.minimized {
+  opacity: 0.7;
+}
+
+.taskbar-item-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  line-height: 1;
+}
+
+.taskbar-item-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.taskbar-item-close {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.taskbar-item:hover .taskbar-item-close {
+  opacity: 1;
+}
+
+.taskbar-item-close:hover {
+  background-color: var(--error-color);
+}
+
+/* System Tray */
+.system-tray {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 0 8px;
+  color: var(--taskbar-text);
+}
+
+.clock {
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== CONTEXT MENU ==================== */
+.context-menu {
+  position: absolute;
+  min-width: 200px;
+  background-color: var(--window-bg);
+  border: 1px solid var(--window-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  padding: var(--spacing-xs);
+  z-index: var(--z-context-menu);
+  animation: fadeIn var(--transition-fast);
+}
+
+.context-menu-list {
+  list-style: none;
+}
+
+.context-menu-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--primary-text);
+  transition: background-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.context-menu-item:hover {
+  background-color: var(--titlebar-hover);
+}
+
+.context-menu-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.context-menu-item.disabled:hover {
+  background-color: transparent;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: var(--spacing-xs) 0;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .taskbar {
+    height: 72px;
+  }
+
+  .desktop {
+    bottom: 72px;
+  }
+
+  .taskbar-item-title {
+    max-width: 100px;
+  }
+
+  .taskbar-items {
+    max-width: min(520px, calc(100vw - 170px));
+  }
+}

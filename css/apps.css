@@ -1,0 +1,346 @@
+/* Terminal */
+.app-terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  line-height: 1.6;
+}
+
+.terminal-line {
+  margin-bottom: var(--spacing-xs);
+  word-wrap: break-word;
+}
+
+.terminal-line.command {
+  color: #4ec9b0;
+}
+
+.terminal-line.error {
+  color: #f48771;
+}
+
+.terminal-line.success {
+  color: #89d185;
+}
+
+.terminal-line.info {
+  color: #569cd6;
+}
+
+.terminal-prompt {
+  color: #4ec9b0;
+  margin-right: var(--spacing-sm);
+}
+
+.terminal-input-container {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-top: 1px solid #333;
+  background-color: #252526;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #d4d4d4;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background-color: #d4d4d4;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* File explorer */
+.app-file-explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.file-explorer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--tertiary-bg);
+}
+
+.file-explorer-breadcrumb {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9rem;
+  overflow-x: auto;
+}
+
+.breadcrumb-item {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+
+.breadcrumb-item:hover {
+  background-color: var(--titlebar-hover);
+}
+
+.breadcrumb-separator {
+  color: var(--secondary-text);
+}
+
+.file-explorer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+}
+
+.file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.file-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  text-align: center;
+}
+
+.file-item:hover {
+  background-color: var(--titlebar-hover);
+}
+
+.file-item.selected {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.file-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* ==================== SYSTEM MONITOR APP ==================== */
+.app-system-monitor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.monitor-card {
+  background-color: var(--tertiary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.monitor-card-header {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--primary-text);
+}
+
+.monitor-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.stat-unit {
+  font-size: 0.9rem;
+  color: var(--secondary-text);
+  margin-left: var(--spacing-xs);
+}
+
+/* ==================== SETTINGS APP ==================== */
+.app-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.settings-section {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-lg);
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+}
+
+.settings-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-text);
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.setting-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.setting-label-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--primary-text);
+}
+
+.setting-label-description {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+}
+
+.setting-control {
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  display: flex;
+  gap: var(--spacing-xs);
+  background-color: var(--tertiary-bg);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs);
+}
+
+.theme-option {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  transition: background-color var(--transition-fast);
+}
+
+.theme-option.active {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.wallpaper-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.wallpaper-option {
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  background-size: cover;
+  background-position: center;
+}
+
+.wallpaper-option.active {
+  border-color: var(--accent-color);
+}
+
+/* ==================== COMMON APP COMPONENTS ==================== */
+.app-toolbar {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--tertiary-bg);
+}
+
+.toolbar-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  transition: background-color var(--transition-fast);
+}
+
+.toolbar-button:hover {
+  background-color: var(--titlebar-hover);
+}
+
+.toolbar-separator {
+  width: 1px;
+  background-color: var(--border-color);
+  margin: 0 var(--spacing-xs);
+}
