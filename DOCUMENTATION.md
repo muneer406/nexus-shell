@@ -79,6 +79,12 @@ Note:
 
 - A lightweight virtual file system is implemented as a manager over the state tree.
 
+Current capabilities:
+
+- Path normalization (`/`, `.`, `..`)
+- Navigation (`cd`, `navigateTo`, `goBack`, `pwd`)
+- CRUD (`mkdir`, `touch`, `rm`, `rename`)
+
 Key file:
 
 - `js/managers/FileSystem.js`

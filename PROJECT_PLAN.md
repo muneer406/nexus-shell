@@ -49,6 +49,7 @@ Nexus Shell/
 - [x] Set up base HTML file
 - [x] Create CSS files with base styles
 - [ ] Initialize Git repository
+ - [x] Initialize Git repository
 
 ### 📦 Phase 1: Core Foundation
 
@@ -116,10 +117,10 @@ Nexus Shell/
    - [x] Create z-index management for focus
 
 4. **Taskbar Integration**
-   - [ ] Show minimized windows in taskbar
+   - [x] Show minimized windows in taskbar
    - [ ] Add window count badges
-   - [ ] Implement taskbar item click to restore
-   - [ ] Add active window highlighting
+   - [x] Implement taskbar item click to restore
+   - [x] Add active window highlighting
 
 **Deliverable:** Fully functional window system with basic operations
 
@@ -174,13 +175,13 @@ Nexus Shell/
    - [x] Create FileSystem.js with directory tree
    - [x] Implement file/folder structure in JSON
    - [x] Add getCurrentDirectory() method
-   - [ ] Create navigateTo() and goBack() functions
+   - [x] Create navigateTo() and goBack() functions
 
 2. **File Operations**
 
    - [x] Implement createFile() and createFolder()
    - [x] Add deleteFile() and deleteFolder()
-   - [ ] Create renameFile() functionality
+   - [x] Create renameFile() functionality
    - [x] Add file metadata (size, date, type)
 
 3. **File Explorer App**
@@ -189,7 +190,7 @@ Nexus Shell/
    - [x] Display current directory contents
    - [x] Implement folder navigation (double-click)
    - [x] Add breadcrumb navigation
-   - [ ] Create file/folder icons
+   - [x] Create file/folder icons
 
 4. **File Actions**
    - [ ] Right-click context menu for files
@@ -241,16 +242,16 @@ Nexus Shell/
 5. **System Commands**
 
    - [x] `open [app]` - Launch application
-   - [ ] `close [app]` - Close application
+   - [x] `close [app]` - Close application
    - [x] `theme [name]` - Change theme
    - [x] `wallpaper [url]` - Set wallpaper
    - [x] `stats` - Show system statistics
 
 6. **Command History**
-   - [ ] Store command history in array
-   - [ ] Implement up/down arrow navigation
-   - [ ] Save history to LocalStorage
-   - [ ] Add history limit (max 100 commands)
+   - [x] Store command history in array
+   - [x] Implement up/down arrow navigation
+   - [x] Save history to LocalStorage
+   - [x] Add history limit (max 100 commands)
 
 **Deliverable:** Fully functional terminal with 15+ commands
 
@@ -264,8 +265,8 @@ Nexus Shell/
 
 1. **SystemMonitor App**
 
-   - [ ] Create SystemMonitor.js application
-   - [ ] Design dashboard layout with cards
+   - [x] Create SystemMonitor.js application
+   - [x] Design dashboard layout with cards
    - [ ] Add refresh rate selector
 
 2. **DOM Statistics**
@@ -307,17 +308,17 @@ Nexus Shell/
 
 2. **Settings App**
 
-   - [ ] Create Settings.js application
-   - [ ] Add wallpaper selection UI
-   - [ ] Implement theme toggle (light/dark)
+   - [x] Create Settings.js application
+   - [x] Add wallpaper selection UI
+   - [x] Implement theme toggle (light/dark)
    - [ ] Add taskbar position options
 
 3. **Theme System**
 
-   - [ ] Create ThemeManager.js
-   - [ ] Define light and dark color schemes
-   - [ ] Implement CSS variable switching
-   - [ ] Save theme preference to LocalStorage
+   - [x] Create ThemeManager.js
+   - [x] Define light and dark color schemes
+   - [x] Implement CSS variable switching
+   - [x] Save theme preference to LocalStorage
 
 4. **User Preferences**
    - [ ] Desktop icon size setting

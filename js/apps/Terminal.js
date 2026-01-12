@@ -84,7 +84,7 @@ const TerminalApp = {
 
             switch (cmd) {
                 case 'help': {
-                    writeLine('Commands: help, clear, echo, date, whoami, pwd, ls, cd, mkdir, touch, rm, open, theme, wallpaper, stats');
+                    writeLine('Commands: help, clear, echo, date, whoami, pwd, ls, cd, mkdir, touch, rm, open, close, theme, wallpaper, stats');
                     break;
                 }
                 case 'clear': {
@@ -149,6 +149,37 @@ const TerminalApp = {
                         break;
                     }
                     eventBus.publish(EVENTS.APP_LAUNCH_REQUESTED, { appName: app, source: 'terminal' });
+                    break;
+                }
+                case 'close': {
+                    const app = (args[0] ?? '').toLowerCase();
+                    if (!app) {
+                        writeLine('Usage: close <terminal|file-explorer|system-monitor|settings>', 'error');
+                        break;
+                    }
+
+                    const appTypeByName = {
+                        'terminal': 'terminal',
+                        'file-explorer': 'file-explorer',
+                        'system-monitor': 'system-monitor',
+                        'settings': 'settings',
+                    };
+
+                    const appType = appTypeByName[app];
+                    if (!appType) {
+                        writeLine('Unknown app. Try: terminal, file-explorer, system-monitor, settings', 'error');
+                        break;
+                    }
+
+                    const windows = state.get('windows') ?? [];
+                    const win = windows.find(w => w.appType === appType);
+                    if (!win) {
+                        writeLine('App is not open', 'info');
+                        break;
+                    }
+
+                    eventBus.publish(EVENTS.WINDOW_CLOSED, { windowId: win.id, source: 'terminal' });
+                    writeLine(`Closed ${app}`, 'success');
                     break;
                 }
                 case 'theme': {

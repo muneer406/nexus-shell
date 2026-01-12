@@ -1,6 +1,11 @@
 import state from '../core/State.js';
 
 class FileSystem {
+    constructor() {
+        this.history = [];
+        this.maxHistory = 50;
+    }
+
     normalizePath(inputPath, basePath = null) {
         const base = basePath ?? state.get('currentDirectory') ?? '/';
         const raw = String(inputPath ?? '').trim();
@@ -69,6 +74,31 @@ class FileSystem {
         }
         state.setState({ currentDirectory: targetPath });
         return { ok: true, path: targetPath };
+    }
+
+    navigateTo(path) {
+        const from = this.pwd();
+        const targetPath = this.normalizePath(path ?? '/', from);
+        const resolved = this.getNode(targetPath);
+        if (!resolved || resolved.node.type !== 'directory') {
+            return { ok: false, error: 'Directory not found', path: targetPath };
+        }
+
+        if (from !== targetPath) {
+            this.history.push(from);
+            if (this.history.length > this.maxHistory) this.history.shift();
+        }
+
+        state.setState({ currentDirectory: targetPath });
+        return { ok: true, path: targetPath };
+    }
+
+    goBack() {
+        if (this.history.length === 0) {
+            return { ok: false, error: 'No previous directory' };
+        }
+        const prev = this.history.pop();
+        return this.cd(prev);
     }
 
     pwd() {
@@ -163,6 +193,51 @@ class FileSystem {
         delete parent.children[name];
         state.setState({ fileSystem: state.get('fileSystem') });
         return { ok: true, name };
+    }
+
+    rename(nameOrPath, newName) {
+        const raw = String(nameOrPath ?? '').trim();
+        const next = String(newName ?? '').trim();
+
+        if (!raw) return { ok: false, error: 'Missing source name' };
+        if (!next) return { ok: false, error: 'Missing new name' };
+        if (next.includes('/')) return { ok: false, error: 'New name must not contain /' };
+        if (next === '.' || next === '..') return { ok: false, error: 'Invalid new name' };
+
+        const oldPath = this.normalizePath(raw, state.get('currentDirectory') ?? '/');
+        if (oldPath === '/') return { ok: false, error: 'Refusing to rename root' };
+
+        const parts = oldPath.split('/').filter(Boolean);
+        const oldName = parts.pop();
+        const parentPath = '/' + parts.join('/');
+
+        const parentResolved = this.getNode(parentPath);
+        if (!parentResolved || parentResolved.node.type !== 'directory') {
+            return { ok: false, error: 'Parent directory not found', path: parentPath };
+        }
+
+        const parent = parentResolved.node;
+        const existing = parent.children?.[oldName];
+        if (!existing) return { ok: false, error: 'Not found', name: oldName };
+
+        if (parent.children?.[next]) {
+            return { ok: false, error: 'Already exists', name: next };
+        }
+
+        parent.children[next] = { ...existing, name: next, modified: Date.now() };
+        delete parent.children[oldName];
+
+        const cwd = this.pwd();
+        const newPath = parentPath === '/' ? `/${next}` : `${parentPath}/${next}`;
+
+        if (cwd === oldPath || cwd.startsWith(oldPath + '/')) {
+            const updatedCwd = newPath + cwd.slice(oldPath.length);
+            state.setState({ fileSystem: state.get('fileSystem'), currentDirectory: updatedCwd });
+            return { ok: true, from: oldPath, to: newPath, cwd: updatedCwd };
+        }
+
+        state.setState({ fileSystem: state.get('fileSystem') });
+        return { ok: true, from: oldPath, to: newPath };
     }
 
     readFile(path) {

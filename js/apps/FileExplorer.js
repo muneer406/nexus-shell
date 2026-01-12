@@ -2,7 +2,22 @@ import state from '../core/State.js';
 import fileSystem from '../managers/FileSystem.js';
 
 function iconFor(type) {
-    return type === 'directory' ? '📁' : '📄';
+    if (type === 'directory') {
+        return `
+            <svg class="file-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+              <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v8A2.5 2.5 0 0 1 18 20H6A2.5 2.5 0 0 1 3.5 17.5v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M3.5 9h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+        `.trim();
+    }
+    return `
+        <svg class="file-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+          <path d="M7 3.5h7l3 3V20.5H7V3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M14 3.5V7h3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9 11h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M9 14h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+    `.trim();
 }
 
 function buildCrumbs(path) {
