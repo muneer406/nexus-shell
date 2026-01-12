@@ -89,8 +89,9 @@ class Taskbar {
             item.classList.add('minimized');
         }
 
+        const iconHtml = this.renderIcon(window.icon, window.title || 'App');
         item.innerHTML = `
-            <span class="taskbar-item-icon">${window.icon || '📄'}</span>
+            <span class="taskbar-item-icon">${iconHtml}</span>
             <span class="taskbar-item-title">${window.title || 'Untitled'}</span>
             <span class="taskbar-item-close" data-action="close">×</span>
         `;
@@ -112,6 +113,15 @@ class Taskbar {
         });
 
         return item;
+    }
+
+    renderIcon(icon, label) {
+        if (!icon) return '📄';
+        if (typeof icon === 'string' && (icon.endsWith('.svg') || icon.endsWith('.png') || icon.endsWith('.jpg') || icon.endsWith('.jpeg') || icon.includes('/'))) {
+            const safeLabel = String(label || 'App').replace(/"/g, '');
+            return `<img class="ui-icon" src="${icon}" alt="${safeLabel}">`;
+        }
+        return icon;
     }
 
     updateClock() {

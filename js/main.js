@@ -24,6 +24,8 @@ class NexusShell {
 
             this.themeManager.applyTheme(state.get('theme'));
 
+            this.setupSmallScreenGate();
+
             this.setupDesktopContextMenu();
 
             this.startAutoSave();
@@ -31,6 +33,29 @@ class NexusShell {
         } catch (error) {
             console.error('Failed to initialize Nexus Shell:', error);
         }
+    }
+
+    setupSmallScreenGate() {
+        const gate = document.getElementById('mobile-gate');
+        const continueBtn = document.getElementById('mobile-gate-continue');
+        if (!gate || !continueBtn) return;
+
+        const applyGate = () => {
+            const bypass = storage.load('mobileBypass', false);
+            const tooSmall = window.innerWidth < 900 || window.innerHeight < 520;
+            const locked = tooSmall && !bypass;
+
+            document.body.classList.toggle('mobile-locked', locked);
+            gate.classList.toggle('hidden', !locked);
+        };
+
+        continueBtn.addEventListener('click', () => {
+            storage.save('mobileBypass', true);
+            applyGate();
+        });
+
+        window.addEventListener('resize', applyGate);
+        applyGate();
     }
 
     loadState() {
@@ -157,28 +182,28 @@ class NexusShell {
         const appConfigs = {
             'terminal': {
                 title: 'Nexus Terminal',
-                icon: 'T',
+                icon: 'assets/icons/terminal.svg',
                 appType: 'terminal',
                 width: 600,
                 height: 400,
             },
             'file-explorer': {
                 title: 'File Explorer',
-                icon: 'F',
+                icon: 'assets/icons/folder.svg',
                 appType: 'file-explorer',
                 width: 700,
                 height: 500,
             },
             'system-monitor': {
                 title: 'System Monitor',
-                icon: 'S',
+                icon: 'assets/icons/activity.svg',
                 appType: 'system-monitor',
                 width: 500,
                 height: 400,
             },
             'settings': {
                 title: 'Settings',
-                icon: 'C',
+                icon: 'assets/icons/settings.svg',
                 appType: 'settings',
                 width: 600,
                 height: 500,
@@ -187,6 +212,16 @@ class NexusShell {
 
         const config = appConfigs[appName];
         if (config) {
+            const existing = state.get('windows').find(w => w.appType === config.appType);
+            if (existing) {
+                if (existing.isMinimized) {
+                    this.windowManager.restoreWindow(existing.id);
+                } else {
+                    this.windowManager.focusWindow(existing.id);
+                }
+                return;
+            }
+
             const windowId = this.windowManager.createWindow(config);
             eventBus.publish(EVENTS.APP_LAUNCHED, { appName, config, windowId });
         } else {

@@ -8,6 +8,8 @@ class Window {
         this.isDragging = false;
         this.isResizing = false;
         this.dragOffset = { x: 0, y: 0 };
+        this.dragRaf = null;
+        this.pendingDrag = null;
 
         this.create();
         this.setupEventListeners();
@@ -35,7 +37,7 @@ class Window {
 
         winEl.innerHTML = `
             <div class="window-titlebar">
-                <span class="window-icon">${this.data.icon || '📄'}</span>
+            <span class="window-icon">${this.renderIcon(this.data.icon, this.data.title || 'App')}</span>
                 <span class="window-title">${this.data.title || 'Untitled'}</span>
                 <div class="window-controls">
                     <button class="window-control-btn minimize" data-action="minimize" aria-label="Minimize">
@@ -62,6 +64,15 @@ class Window {
         this.content = winEl.querySelector('.window-content');
 
         setTimeout(() => this.loadAppContent(), 100);
+    }
+
+    renderIcon(icon, label) {
+        if (!icon) return '📄';
+        if (typeof icon === 'string' && (icon.endsWith('.svg') || icon.endsWith('.png') || icon.endsWith('.jpg') || icon.endsWith('.jpeg') || icon.includes('/'))) {
+            const safeLabel = String(label || 'App').replace(/"/g, '');
+            return `<img class="ui-icon" src="${icon}" alt="${safeLabel}">`;
+        }
+        return icon;
     }
 
     setupEventListeners() {
@@ -130,12 +141,28 @@ class Window {
             this.element.style.left = `${x}px`;
             this.element.style.top = `${y}px`;
 
-            this.manager.updateWindowPosition(this.data.id, x, y);
+            this.pendingDrag = { x, y };
+            if (this.dragRaf === null) {
+                this.dragRaf = requestAnimationFrame(() => {
+                    this.dragRaf = null;
+                    if (this.pendingDrag) {
+                        this.manager.updateWindowPosition(this.data.id, this.pendingDrag.x, this.pendingDrag.y);
+                    }
+                });
+            }
         };
 
         const handleMouseUp = () => {
             this.isDragging = false;
             this.element.classList.remove('dragging');
+            if (this.dragRaf !== null) {
+                cancelAnimationFrame(this.dragRaf);
+                this.dragRaf = null;
+            }
+            if (this.pendingDrag) {
+                this.manager.updateWindowPosition(this.data.id, this.pendingDrag.x, this.pendingDrag.y);
+                this.pendingDrag = null;
+            }
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };

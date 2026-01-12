@@ -78,7 +78,7 @@ class State {
         return this.state[key];
     }
 
-    setState(updates) {
+    setState(updates, options = {}) {
         const prevState = { ...this.state };
         this.state = { ...this.state, ...updates };
 
@@ -96,7 +96,9 @@ class State {
             });
         }
 
-        this.saveToStorage();
+        if (options.persist !== false) {
+            this.saveToStorage();
+        }
     }
 
     subscribe(key, callback) {
@@ -141,12 +143,12 @@ class State {
         this.setState({ windows, activeWindowId });
     }
 
-    updateWindow(windowId, updates) {
+    updateWindow(windowId, updates, options = {}) {
         const windows = this.state.windows.map(w =>
             w.id === windowId ? { ...w, ...updates } : w
         );
 
-        this.setState({ windows });
+        this.setState({ windows }, options);
     }
 
     focusWindow(windowId) {

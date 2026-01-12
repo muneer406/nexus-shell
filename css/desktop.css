@@ -27,6 +27,81 @@
   z-index: var(--z-desktop);
 }
 
+.mobile-locked #desktop,
+.mobile-locked #taskbar {
+  filter: blur(10px);
+}
+
+.mobile-locked {
+  overflow: hidden;
+}
+
+.mobile-gate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: calc(var(--z-context-menu) + 10);
+  background: rgba(6, 10, 24, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.mobile-gate.hidden {
+  display: none;
+}
+
+.mobile-gate-card {
+  width: min(520px, 100%);
+  border-radius: 18px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 18px 55px var(--shadow-heavy);
+  padding: 18px;
+}
+
+.mobile-gate-title {
+  font-size: 1.05rem;
+  font-weight: 720;
+  color: var(--primary-text);
+  margin-bottom: 8px;
+}
+
+.mobile-gate-text {
+  font-size: 0.95rem;
+  color: var(--secondary-text);
+  line-height: 1.5;
+}
+
+.mobile-gate-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-gate-button {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-weight: 650;
+  color: var(--primary-text);
+  background: rgba(110, 168, 255, 0.22);
+  border: 1px solid rgba(110, 168, 255, 0.32);
+  transition: transform var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.mobile-gate-button:hover {
+  transform: translateY(-1px);
+  background: rgba(110, 168, 255, 0.28);
+}
+
+.ui-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
 .desktop::before {
   content: "";
   position: absolute;

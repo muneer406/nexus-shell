@@ -54,6 +54,11 @@ class WindowManager {
         eventBus.publish(EVENTS.WINDOW_MINIMIZED, { windowId });
     }
 
+    restoreWindow(windowId) {
+        state.restoreWindow(windowId);
+        eventBus.publish(EVENTS.WINDOW_RESTORED, { windowId });
+    }
+
     toggleMaximize(windowId) {
         state.toggleMaximize(windowId);
         const window = state.get('windows').find(w => w.id === windowId);
@@ -64,12 +69,12 @@ class WindowManager {
     }
 
     updateWindowPosition(windowId, x, y) {
-        state.updateWindow(windowId, { x, y });
+        state.updateWindow(windowId, { x, y }, { persist: false });
         eventBus.publish(EVENTS.WINDOW_MOVED, { windowId, x, y });
     }
 
     updateWindowSize(windowId, width, height) {
-        state.updateWindow(windowId, { width, height });
+        state.updateWindow(windowId, { width, height }, { persist: false });
         eventBus.publish(EVENTS.WINDOW_RESIZED, { windowId, width, height });
     }
 
