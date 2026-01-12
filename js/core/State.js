@@ -15,6 +15,13 @@ class State {
             sessionStart: Date.now(),
             commandsExecuted: 0,
             windowsCreated: 0,
+            windowsClosed: 0,
+            windowsFocused: 0,
+            windowsMinimized: 0,
+            windowsRestored: 0,
+            windowsMoved: 0,
+            windowsResized: 0,
+            lastActivityAt: Date.now(),
 
             terminalHistory: [],
 
@@ -23,6 +30,44 @@ class State {
         };
 
         this.listeners = {};
+    }
+
+    normalizePersistedWindows(windows, activeWindowId) {
+        if (!Array.isArray(windows)) return { windows: [], activeWindowId: null, nextWindowId: 1, maxZIndex: 100 };
+
+        const sanitized = windows
+            .filter(w => w && typeof w === 'object')
+            .map(w => ({ ...w }))
+            .filter(w => Number.isFinite(w.id) && typeof w.appType === 'string' && w.appType.length > 0);
+
+        const ids = new Set();
+        const deduped = [];
+        for (const w of sanitized) {
+            if (ids.has(w.id)) continue;
+            ids.add(w.id);
+            deduped.push(w);
+        }
+
+        const maxId = deduped.reduce((acc, w) => Math.max(acc, w.id), 0);
+        const maxZ = deduped.reduce((acc, w) => Math.max(acc, Number.isFinite(w.zIndex) ? w.zIndex : 0), 100);
+
+        const hasActive = deduped.some(w => w.id === activeWindowId);
+        const normalizedActive = hasActive ? activeWindowId : (deduped.length ? deduped[deduped.length - 1].id : null);
+
+        const normalizedWindows = deduped.map(w => ({
+            ...w,
+            zIndex: Number.isFinite(w.zIndex) ? w.zIndex : 100,
+            isMinimized: Boolean(w.isMinimized),
+            isMaximized: Boolean(w.isMaximized),
+            isFocused: w.id === normalizedActive,
+        }));
+
+        return {
+            windows: normalizedWindows,
+            activeWindowId: normalizedActive,
+            nextWindowId: Math.max(1, maxId + 1),
+            maxZIndex: Math.max(100, maxZ + 1),
+        };
     }
 
     initializeFileSystem() {
@@ -242,6 +287,12 @@ class State {
         }
     }
 
+    bumpCounter(key, delta = 1, options = {}) {
+        const current = this.state[key];
+        const next = (Number.isFinite(current) ? current : 0) + delta;
+        this.setState({ [key]: next }, options);
+    }
+
     subscribe(key, callback) {
         if (!this.listeners[key]) {
             this.listeners[key] = [];
@@ -342,6 +393,12 @@ class State {
                 wallpaper: this.state.wallpaper,
                 terminalHistory: this.state.terminalHistory,
                 fileSystem: this.state.fileSystem,
+
+                // Window restore
+                windows: this.state.windows,
+                activeWindowId: this.state.activeWindowId,
+                nextWindowId: this.state.nextWindowId,
+                maxZIndex: this.state.maxZIndex,
             };
 
             localStorage.setItem('nexusShellState', JSON.stringify(stateToSave));
@@ -360,7 +417,13 @@ class State {
                     parsed.fileSystem = this.mergeFileSystemDefaults(parsed.fileSystem);
                 }
 
-                this.setState(parsed);
+                const normalizedWin = this.normalizePersistedWindows(parsed?.windows, parsed?.activeWindowId);
+                parsed.windows = normalizedWin.windows;
+                parsed.activeWindowId = normalizedWin.activeWindowId;
+                parsed.nextWindowId = normalizedWin.nextWindowId;
+                parsed.maxZIndex = normalizedWin.maxZIndex;
+
+                this.setState(parsed, { persist: false });
                 return true;
             }
         } catch (error) {
@@ -378,11 +441,18 @@ class State {
             maxZIndex: 100,
             currentDirectory: '/home',
             fileSystem: this.initializeFileSystem(),
-            theme: 'light',
-            wallpaper: 'default',
+            theme: 'dark',
+            wallpaper: { type: 'image', src: 'assets/wallpapers/1.jpg', id: '1.jpg' },
             sessionStart: Date.now(),
             commandsExecuted: 0,
             windowsCreated: 0,
+            windowsClosed: 0,
+            windowsFocused: 0,
+            windowsMinimized: 0,
+            windowsRestored: 0,
+            windowsMoved: 0,
+            windowsResized: 0,
+            lastActivityAt: Date.now(),
             terminalHistory: [],
             startMenuOpen: false,
             contextMenuOpen: false,

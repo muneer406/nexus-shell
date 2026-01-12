@@ -99,16 +99,16 @@ class Taskbar {
         item.addEventListener('click', (e) => {
             if (e.target.dataset.action === 'close') {
                 e.stopPropagation();
-                eventBus.publish(EVENTS.WINDOW_CLOSED, { windowId: window.id });
+                eventBus.publish(EVENTS.WINDOW_CLOSE_REQUESTED, { windowId: window.id, source: 'taskbar' });
                 return;
             }
 
             if (window.isMinimized) {
-                eventBus.publish(EVENTS.WINDOW_RESTORED, { windowId: window.id });
+                eventBus.publish(EVENTS.WINDOW_RESTORE_REQUESTED, { windowId: window.id, source: 'taskbar' });
             } else if (window.isFocused) {
-                eventBus.publish(EVENTS.WINDOW_MINIMIZED, { windowId: window.id });
+                eventBus.publish(EVENTS.WINDOW_MINIMIZE_REQUESTED, { windowId: window.id, source: 'taskbar' });
             } else {
-                eventBus.publish(EVENTS.WINDOW_FOCUSED, { windowId: window.id });
+                eventBus.publish(EVENTS.WINDOW_FOCUS_REQUESTED, { windowId: window.id, source: 'taskbar' });
             }
         });
 

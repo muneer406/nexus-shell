@@ -82,25 +82,31 @@ class NexusShell {
             this.launchApp(appName);
         });
 
-        eventBus.subscribe(EVENTS.WINDOW_CLOSED, ({ windowId }) => {
+        eventBus.subscribe(EVENTS.WINDOW_CLOSE_REQUESTED, ({ windowId }) => {
             this.windowManager.closeWindow(windowId);
         });
 
-        eventBus.subscribe(EVENTS.WINDOW_MINIMIZED, ({ windowId }) => {
-            state.minimizeWindow(windowId);
+        eventBus.subscribe(EVENTS.WINDOW_MINIMIZE_REQUESTED, ({ windowId }) => {
+            this.windowManager.minimizeWindow(windowId);
         });
 
-        eventBus.subscribe(EVENTS.WINDOW_RESTORED, ({ windowId }) => {
-            state.restoreWindow(windowId);
+        eventBus.subscribe(EVENTS.WINDOW_RESTORE_REQUESTED, ({ windowId }) => {
+            this.windowManager.restoreWindow(windowId);
         });
 
-        eventBus.subscribe(EVENTS.WINDOW_FOCUSED, ({ windowId }) => {
-            state.focusWindow(windowId);
+        eventBus.subscribe(EVENTS.WINDOW_FOCUS_REQUESTED, ({ windowId }) => {
+            this.windowManager.focusWindow(windowId);
         });
 
         document.addEventListener('keydown', (e) => {
+            state.setState({ lastActivityAt: Date.now() }, { persist: false });
             this.handleKeyboardShortcuts(e);
         });
+
+        const markActivity = () => {
+            state.setState({ lastActivityAt: Date.now() }, { persist: false });
+        };
+        document.addEventListener('pointerdown', markActivity, { passive: true });
 
         window.addEventListener('beforeunload', () => {
             state.saveToStorage();

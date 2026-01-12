@@ -60,6 +60,11 @@ const eventBus = new EventBus();
 // Define standard event names as constants
 export const EVENTS = {
     // Window Events
+    WINDOW_CLOSE_REQUESTED: 'window:closeRequested',
+    WINDOW_FOCUS_REQUESTED: 'window:focusRequested',
+    WINDOW_MINIMIZE_REQUESTED: 'window:minimizeRequested',
+    WINDOW_RESTORE_REQUESTED: 'window:restoreRequested',
+
     WINDOW_CREATED: 'window:created',
     WINDOW_CLOSED: 'window:closed',
     WINDOW_FOCUSED: 'window:focused',

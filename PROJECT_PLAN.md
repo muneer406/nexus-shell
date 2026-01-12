@@ -69,7 +69,6 @@ Nexus Shell/
    - [x] Create State.js with initial state object
    - [x] Implement getState() and setState() methods
    - [x] Add state change listeners
-   - [ ] Create debug logging for state changes (optional)
 
 3. **Event Bus**
 
@@ -83,6 +82,8 @@ Nexus Shell/
    - [x] Implement save() and load() methods
    - [x] Add error handling for storage quota
    - [x] Test persistence across page refreshes
+   - [x] Persist window layout (positions/sizes/state)
+   - [x] Restore open windows on startup
 
 **Deliverable:** A working desktop with taskbar that saves preferences
 
@@ -117,7 +118,6 @@ Nexus Shell/
 
 4. **Taskbar Integration**
    - [x] Show minimized windows in taskbar
-   - [ ] Add window count badges
    - [x] Implement taskbar item click to restore
    - [x] Add active window highlighting
 
@@ -194,8 +194,6 @@ Nexus Shell/
 4. **File Actions**
    - [x] Right-click context menu for files
    - [x] Implement "Open", "Rename", "Delete"
-   - [ ] Add drag-and-drop file moving (stretch)
-   - [ ] Create file search functionality
 
 **Deliverable:** Working file explorer with basic CRUD operations
 
@@ -266,7 +264,6 @@ Nexus Shell/
 
    - [x] Create SystemMonitor.js application
    - [x] Design dashboard layout with cards
-   - [ ] Add refresh rate selector
 
 2. **DOM Statistics**
 

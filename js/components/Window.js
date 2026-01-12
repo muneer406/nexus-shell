@@ -180,7 +180,11 @@ class Window {
                 this.dragRaf = null;
             }
             if (this.pendingDrag) {
-                this.manager.updateWindowPosition(this.data.id, this.pendingDrag.x, this.pendingDrag.y);
+                state.updateWindow(
+                    this.data.id,
+                    { x: this.pendingDrag.x, y: this.pendingDrag.y },
+                    { persist: true }
+                );
                 this.pendingDrag = null;
             }
             document.removeEventListener('mousemove', handleMouseMove);

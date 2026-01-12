@@ -178,7 +178,7 @@ const TerminalApp = {
                         break;
                     }
 
-                    eventBus.publish(EVENTS.WINDOW_CLOSED, { windowId: win.id, source: 'terminal' });
+                    eventBus.publish(EVENTS.WINDOW_CLOSE_REQUESTED, { windowId: win.id, source: 'terminal' });
                     writeLine(`Closed ${app}`, 'success');
                     break;
                 }

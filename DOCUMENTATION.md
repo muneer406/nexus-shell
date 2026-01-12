@@ -31,6 +31,11 @@ Important event convention:
 - `EVENTS.APP_LAUNCH_REQUESTED` is used for “user requested to open an app” (start menu / context menu).
 - `EVENTS.APP_LAUNCHED` is a notification emitted after the app window is created.
 
+Window events follow the same pattern:
+
+- `EVENTS.WINDOW_*_REQUESTED` are used as “commands” (Taskbar/Terminal/UI requests).
+- `EVENTS.WINDOW_*` are notifications emitted after `WindowManager` mutates state.
+
 This separation prevents accidental recursion and infinite event loops.
 
 ### 3.3 Window System
@@ -73,7 +78,8 @@ Apps can request context menus without importing the component directly:
 
 ### 3.4 Persistence
 
-- Preferences (theme, wallpaper), file system mock, and terminal history are persisted to `localStorage`.
+- Preferences (theme, wallpaper), virtual file system, terminal history, and window layout are persisted to `localStorage`.
+- Window restore includes: open windows, positions/sizes, minimize/maximize state, z-index ordering, and the active window.
 
 Key files:
 
