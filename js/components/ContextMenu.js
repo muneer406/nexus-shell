@@ -16,9 +16,14 @@ class ContextMenu {
             this.openMenu(x, y, items, context);
         });
 
+        // Prevent the browser's default context menu anywhere inside the desktop.
+        // App modules can open their own menus by publishing CONTEXT_MENU_REQUESTED.
+        this.desktop.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
         this.desktop.addEventListener('contextmenu', (e) => {
             if (e.target === this.desktop || e.target.classList.contains('desktop-icons')) {
-                e.preventDefault();
                 this.openMenu(
                     e.clientX,
                     e.clientY,

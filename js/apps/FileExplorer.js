@@ -37,7 +37,7 @@ function buildCrumbs(path) {
 const FileExplorerApp = {
     mount({ container, windowId }) {
         const root = document.createElement('div');
-        root.className = 'app-file-explorer';
+        root.className = 'app-file-explorer no-select';
         root.innerHTML = `
             <div class="file-explorer-toolbar">
                 <div class="file-explorer-breadcrumb"></div>
@@ -65,6 +65,13 @@ const FileExplorerApp = {
 
         let selectedName = null;
         let editingName = null;
+
+        const updateSelectionStyles = () => {
+            list.querySelectorAll('.file-item').forEach((el) => {
+                const name = el.dataset.name;
+                el.classList.toggle('selected', Boolean(name) && name === selectedName);
+            });
+        };
 
         const closePreview = () => {
             previewOverlay?.classList.add('hidden');
@@ -125,6 +132,8 @@ const FileExplorerApp = {
             res.items.forEach(item => {
                 const cell = document.createElement('div');
                 cell.className = 'file-item';
+                cell.dataset.name = item.name;
+                cell.dataset.type = item.type;
                 if (item.name === selectedName) cell.classList.add('selected');
                 cell.innerHTML = `
                     <div class="file-icon">${iconFor(item.type)}</div>
@@ -180,7 +189,7 @@ const FileExplorerApp = {
                 cell.addEventListener('click', () => {
                     selectedName = item.name;
                     editingName = null;
-                    render();
+                    updateSelectionStyles();
                 });
 
                 cell.addEventListener('dblclick', () => {
@@ -202,7 +211,7 @@ const FileExplorerApp = {
                     selectedName = item.name;
                     editingName = null;
                     closePreview();
-                    render();
+                    updateSelectionStyles();
 
                     eventBus.publish(EVENTS.CONTEXT_MENU_REQUESTED, {
                         x: e.clientX,
