@@ -171,24 +171,24 @@ Nexus Shell/
 
 1. **FileSystem Core**
 
-   - [ ] Create FileSystem.js with directory tree
-   - [ ] Implement file/folder structure in JSON
-   - [ ] Add getCurrentDirectory() method
+   - [x] Create FileSystem.js with directory tree
+   - [x] Implement file/folder structure in JSON
+   - [x] Add getCurrentDirectory() method
    - [ ] Create navigateTo() and goBack() functions
 
 2. **File Operations**
 
-   - [ ] Implement createFile() and createFolder()
-   - [ ] Add deleteFile() and deleteFolder()
+   - [x] Implement createFile() and createFolder()
+   - [x] Add deleteFile() and deleteFolder()
    - [ ] Create renameFile() functionality
-   - [ ] Add file metadata (size, date, type)
+   - [x] Add file metadata (size, date, type)
 
 3. **File Explorer App**
 
-   - [ ] Create FileExplorer.js application
-   - [ ] Display current directory contents
-   - [ ] Implement folder navigation (double-click)
-   - [ ] Add breadcrumb navigation
+   - [x] Create FileExplorer.js application
+   - [x] Display current directory contents
+   - [x] Implement folder navigation (double-click)
+   - [x] Add breadcrumb navigation
    - [ ] Create file/folder icons
 
 4. **File Actions**
@@ -209,42 +209,42 @@ Nexus Shell/
 
 1. **Terminal UI**
 
-   - [ ] Create Terminal.js app with input field
-   - [ ] Style terminal with monospace font
-   - [ ] Add command history display
-   - [ ] Implement cursor blinking effect
+   - [x] Create Terminal.js app with input field
+   - [x] Style terminal with monospace font
+   - [x] Add command history display
+   - [x] Implement cursor blinking effect
 
 2. **Command Parser**
 
-   - [ ] Create command parsing logic
-   - [ ] Split command into parts (cmd, args, flags)
-   - [ ] Add command validation
-   - [ ] Implement error messages for invalid commands
+   - [x] Create command parsing logic
+   - [x] Split command into parts (cmd, args, flags)
+   - [x] Add command validation
+   - [x] Implement error messages for invalid commands
 
 3. **Basic Commands**
 
-   - [ ] `help` - Show available commands
-   - [ ] `clear` - Clear terminal output
-   - [ ] `echo [text]` - Print text to terminal
-   - [ ] `date` - Show current date/time
-   - [ ] `whoami` - Show user info
+   - [x] `help` - Show available commands
+   - [x] `clear` - Clear terminal output
+   - [x] `echo [text]` - Print text to terminal
+   - [x] `date` - Show current date/time
+   - [x] `whoami` - Show user info
 
 4. **File System Commands**
 
-   - [ ] `ls` - List directory contents
-   - [ ] `cd [path]` - Change directory
-   - [ ] `pwd` - Print working directory
-   - [ ] `mkdir [name]` - Create directory
-   - [ ] `touch [name]` - Create file
-   - [ ] `rm [name]` - Remove file/folder
+   - [x] `ls` - List directory contents
+   - [x] `cd [path]` - Change directory
+   - [x] `pwd` - Print working directory
+   - [x] `mkdir [name]` - Create directory
+   - [x] `touch [name]` - Create file
+   - [x] `rm [name]` - Remove file/folder
 
 5. **System Commands**
 
-   - [ ] `open [app]` - Launch application
+   - [x] `open [app]` - Launch application
    - [ ] `close [app]` - Close application
-   - [ ] `theme [name]` - Change theme
-   - [ ] `wallpaper [url]` - Set wallpaper
-   - [ ] `stats` - Show system statistics
+   - [x] `theme [name]` - Change theme
+   - [x] `wallpaper [url]` - Set wallpaper
+   - [x] `stats` - Show system statistics
 
 6. **Command History**
    - [ ] Store command history in array

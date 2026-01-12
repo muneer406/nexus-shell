@@ -1,4 +1,5 @@
 import state from '../core/State.js';
+import { loadAppModule } from '../apps/registry.js';
 
 class Window {
     constructor(windowData, manager) {
@@ -14,6 +15,7 @@ class Window {
         this.pendingResize = null;
         this.resizeStart = null;
         this.resizeDir = null;
+        this.unmountApp = null;
 
         this.create();
         this.setupEventListeners();
@@ -319,97 +321,57 @@ class Window {
         }
     }
 
-    loadAppContent() {
+    async loadAppContent() {
+        if (this.unmountApp) {
+            try {
+                this.unmountApp();
+            } catch {
+                // ignore
+            }
+            this.unmountApp = null;
+        }
+
         this.content.innerHTML = '';
 
         const appType = this.data.appType;
-
-        switch (appType) {
-            case 'terminal':
-                this.loadTerminalApp();
-                break;
-            case 'file-explorer':
-                this.loadFileExplorerApp();
-                break;
-            case 'system-monitor':
-                this.loadSystemMonitorApp();
-                break;
-            case 'settings':
-                this.loadSettingsApp();
-                break;
-            default:
+        try {
+            const app = await loadAppModule(appType);
+            if (!app || typeof app.mount !== 'function') {
                 this.content.innerHTML = `
                     <div class="window-empty">
                         <div class="window-empty-icon">📦</div>
                         <div class="window-empty-text">Application coming soon...</div>
                     </div>
                 `;
+                return;
+            }
+
+            const cleanup = app.mount({
+                container: this.content,
+                windowId: this.data.id,
+                windowData: this.data,
+            });
+
+            if (typeof cleanup === 'function') {
+                this.unmountApp = cleanup;
+            }
+        } catch (error) {
+            console.error('Failed to load app module:', error);
+            this.content.innerHTML = `
+                <div class="window-error">Failed to load application.</div>
+            `;
         }
     }
 
-    loadTerminalApp() {
-        this.content.innerHTML = `
-            <div class="app-terminal">
-                <div class="terminal-output" id="terminal-output-${this.data.id}">
-                    <div class="terminal-line">Nexus Shell Terminal v1.0</div>
-                    <div class="terminal-line">Type 'help' for available commands.</div>
-                    <div class="terminal-line"></div>
-                </div>
-                <div class="terminal-input-container">
-                    <span class="terminal-prompt">$</span>
-                    <input type="text" class="terminal-input" placeholder="Enter command..." autocomplete="off">
-                </div>
-            </div>
-        `;
-    }
-
-    loadFileExplorerApp() {
-        this.content.innerHTML = `
-            <div class="app-file-explorer">
-                <div class="file-explorer-toolbar">
-                    <div class="file-explorer-breadcrumb">
-                        <span class="breadcrumb-item">Home</span>
-                    </div>
-                </div>
-                <div class="file-explorer-content">
-                    <div class="window-empty">
-                        <div class="window-empty-icon">📁</div>
-                        <div class="window-empty-text">File Explorer coming soon...</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    loadSystemMonitorApp() {
-        this.content.innerHTML = `
-            <div class="app-system-monitor">
-                <div class="monitor-card">
-                    <div class="monitor-card-header">System Statistics</div>
-                    <div class="window-empty">
-                        <div class="window-empty-icon">📊</div>
-                        <div class="window-empty-text">System Monitor coming soon...</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    loadSettingsApp() {
-        this.content.innerHTML = `
-            <div class="app-settings">
-                <div class="settings-section">
-                    <div class="settings-section-title">Appearance</div>
-                    <div class="window-empty">
-                        <div class="window-empty-icon">⚙️</div>
-                        <div class="window-empty-text">Settings coming soon...</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
     destroy() {
+        if (this.unmountApp) {
+            try {
+                this.unmountApp();
+            } catch {
+                // ignore
+            }
+            this.unmountApp = null;
+        }
         if (this.element && this.element.parentNode) {
             this.element.remove();
         }

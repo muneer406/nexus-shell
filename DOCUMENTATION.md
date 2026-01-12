@@ -43,6 +43,17 @@ Key files:
 - `js/managers/WindowManager.js`
 - `js/components/Window.js`
 
+### 3.4 Apps
+
+- Window content is provided by app modules under `js/apps/`.
+- `Window` dynamically loads modules using `js/apps/registry.js` and mounts them into the window content area.
+
+Key files:
+
+- `js/apps/registry.js`
+- `js/apps/Terminal.js`
+- `js/apps/FileExplorer.js`
+
 ### 3.5 Context Menus
 
 - The desktop right-click menu is implemented as a component to keep `main.js` smaller.
@@ -63,6 +74,14 @@ Key files:
 Note:
 
 - The file system and terminal history are currently foundation data structures used by future apps.
+
+### 3.6 Virtual File System
+
+- A lightweight virtual file system is implemented as a manager over the state tree.
+
+Key file:
+
+- `js/managers/FileSystem.js`
 
 ## 4. UI Direction
 
