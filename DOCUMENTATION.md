@@ -36,12 +36,20 @@ This separation prevents accidental recursion and infinite event loops.
 ### 3.3 Window System
 
 - `WindowManager` creates/destroys windows and syncs UI from state.
-- Each `Window` instance is a DOM component that supports focus and dragging.
+- Each `Window` instance is a DOM component that supports focus, dragging, and resizing.
 
 Key files:
 
 - `js/managers/WindowManager.js`
 - `js/components/Window.js`
+
+### 3.5 Context Menus
+
+- The desktop right-click menu is implemented as a component to keep `main.js` smaller.
+
+Key file:
+
+- `js/components/ContextMenu.js`
 
 ### 3.4 Persistence
 

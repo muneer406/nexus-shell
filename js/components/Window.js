@@ -10,6 +10,10 @@ class Window {
         this.dragOffset = { x: 0, y: 0 };
         this.dragRaf = null;
         this.pendingDrag = null;
+        this.resizeRaf = null;
+        this.pendingResize = null;
+        this.resizeStart = null;
+        this.resizeDir = null;
 
         this.create();
         this.setupEventListeners();
@@ -59,6 +63,13 @@ class Window {
             </div>
         `;
 
+        ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'].forEach(dir => {
+            const handle = document.createElement('div');
+            handle.className = `resize-handle ${dir}`;
+            handle.dataset.dir = dir;
+            winEl.appendChild(handle);
+        });
+
         this.element = winEl;
         this.titlebar = winEl.querySelector('.window-titlebar');
         this.content = winEl.querySelector('.window-content');
@@ -97,6 +108,13 @@ class Window {
 
         this.titlebar.addEventListener('dblclick', () => {
             this.handleControlAction('maximize');
+        });
+
+        this.element.querySelectorAll('.resize-handle').forEach(handle => {
+            handle.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                this.startResize(e, handle.dataset.dir);
+            });
         });
     }
 
@@ -163,6 +181,108 @@ class Window {
                 this.manager.updateWindowPosition(this.data.id, this.pendingDrag.x, this.pendingDrag.y);
                 this.pendingDrag = null;
             }
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    startResize(e, dir) {
+        if (this.data.isMaximized) return;
+
+        this.isResizing = true;
+        this.resizeDir = dir;
+        this.element.classList.add('resizing');
+        this.focus();
+
+        const rect = this.element.getBoundingClientRect();
+        this.resizeStart = {
+            startX: e.clientX,
+            startY: e.clientY,
+            left: rect.left,
+            top: rect.top,
+            width: rect.width,
+            height: rect.height,
+        };
+
+        const minWidth = 320;
+        const minHeight = 200;
+        const taskbarHeight = 72;
+
+        const handleMouseMove = (ev) => {
+            if (!this.isResizing || !this.resizeStart) return;
+
+            const dx = ev.clientX - this.resizeStart.startX;
+            const dy = ev.clientY - this.resizeStart.startY;
+
+            let left = this.resizeStart.left;
+            let top = this.resizeStart.top;
+            let width = this.resizeStart.width;
+            let height = this.resizeStart.height;
+
+            if (dir.includes('e')) width = this.resizeStart.width + dx;
+            if (dir.includes('s')) height = this.resizeStart.height + dy;
+            if (dir.includes('w')) {
+                width = this.resizeStart.width - dx;
+                left = this.resizeStart.left + dx;
+            }
+            if (dir.includes('n')) {
+                height = this.resizeStart.height - dy;
+                top = this.resizeStart.top + dy;
+            }
+
+            width = Math.max(minWidth, width);
+            height = Math.max(minHeight, height);
+
+            const maxLeft = window.innerWidth - width;
+            const maxTop = window.innerHeight - taskbarHeight - height;
+            left = Math.max(0, Math.min(left, maxLeft));
+            top = Math.max(0, Math.min(top, maxTop));
+
+            this.element.style.left = `${left}px`;
+            this.element.style.top = `${top}px`;
+            this.element.style.width = `${width}px`;
+            this.element.style.height = `${height}px`;
+
+            this.pendingResize = { left, top, width, height };
+            if (this.resizeRaf === null) {
+                this.resizeRaf = requestAnimationFrame(() => {
+                    this.resizeRaf = null;
+                    if (!this.pendingResize) return;
+                    this.manager.updateWindowPosition(this.data.id, this.pendingResize.left, this.pendingResize.top);
+                    this.manager.updateWindowSize(this.data.id, this.pendingResize.width, this.pendingResize.height);
+                });
+            }
+        };
+
+        const handleMouseUp = () => {
+            this.isResizing = false;
+            this.element.classList.remove('resizing');
+
+            if (this.resizeRaf !== null) {
+                cancelAnimationFrame(this.resizeRaf);
+                this.resizeRaf = null;
+            }
+
+            if (this.pendingResize) {
+                state.updateWindow(
+                    this.data.id,
+                    {
+                        x: this.pendingResize.left,
+                        y: this.pendingResize.top,
+                        width: this.pendingResize.width,
+                        height: this.pendingResize.height,
+                    },
+                    { persist: true }
+                );
+                this.pendingResize = null;
+            }
+
+            this.resizeStart = null;
+            this.resizeDir = null;
+
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };

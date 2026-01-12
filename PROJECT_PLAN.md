@@ -133,31 +133,31 @@ Nexus Shell/
 
 1. **Window Dragging**
 
-   - [ ] Implement mousedown on title bar
-   - [ ] Track mouse movement during drag
-   - [ ] Update window position in real-time
-   - [ ] Prevent dragging outside viewport bounds
-   - [ ] Bring window to front on drag start
+   - [x] Implement mousedown on title bar
+   - [x] Track mouse movement during drag
+   - [x] Update window position in real-time
+   - [x] Prevent dragging outside viewport bounds
+   - [x] Bring window to front on drag start
 
 2. **Window Resizing**
 
-   - [ ] Add resize handles to window corners/edges
-   - [ ] Implement resize logic with min/max constraints
-   - [ ] Update window dimensions in state
-   - [ ] Add visual feedback during resize
+   - [x] Add resize handles to window corners/edges
+   - [x] Implement resize logic with min/max constraints
+   - [x] Update window dimensions in state
+   - [x] Add visual feedback during resize
 
 3. **Context Menu**
 
-   - [ ] Create ContextMenu.js component
-   - [ ] Implement right-click detection
+   - [x] Create ContextMenu.js component
+   - [x] Implement right-click detection
    - [ ] Show contextual options based on target
-   - [ ] Add close-on-outside-click behavior
+   - [x] Add close-on-outside-click behavior
 
 4. **Keyboard Shortcuts**
-   - [ ] Implement Alt+Tab for window switching
-   - [ ] Add Ctrl+W to close active window
-   - [ ] Create F11 for fullscreen mode
-   - [ ] Add Escape to close context menu
+   - [x] Implement Alt+Tab for window switching
+   - [x] Add Ctrl+W to close active window
+   - [x] Create F11 for fullscreen mode
+   - [x] Add Escape to close context menu
 
 **Deliverable:** Smooth, responsive window interactions
 

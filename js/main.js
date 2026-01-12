@@ -2,12 +2,14 @@ import state from './core/State.js';
 import eventBus, { EVENTS } from './core/EventBus.js';
 import storage from './core/Storage.js';
 import Taskbar from './components/Taskbar.js';
+import ContextMenu from './components/ContextMenu.js';
 import WindowManager from './managers/WindowManager.js';
 import ThemeManager from './managers/ThemeManager.js';
 
 class NexusShell {
     constructor() {
         this.taskbar = null;
+        this.contextMenu = null;
         this.windowManager = null;
         this.themeManager = null;
     }
@@ -26,7 +28,7 @@ class NexusShell {
 
             this.setupSmallScreenGate();
 
-            this.setupDesktopContextMenu();
+            this.contextMenu = new ContextMenu();
 
             this.startAutoSave();
 
@@ -93,70 +95,13 @@ class NexusShell {
         });
     }
 
-    setupDesktopContextMenu() {
-        const desktop = document.getElementById('desktop');
-
-        desktop.addEventListener('contextmenu', (e) => {
-            if (e.target === desktop || e.target.classList.contains('desktop-icons')) {
-                e.preventDefault();
-                this.showDesktopContextMenu(e.clientX, e.clientY);
-            }
-        });
-
-        document.addEventListener('click', () => {
-            this.hideContextMenu();
-        });
-    }
-
-    showDesktopContextMenu(x, y) {
-        const contextMenu = document.getElementById('context-menu');
-        const menuList = contextMenu.querySelector('.context-menu-list');
-
-        menuList.innerHTML = `
-            <li class="context-menu-item" data-action="refresh">Refresh</li>
-            <div class="context-menu-divider"></div>
-            <li class="context-menu-item" data-action="open-terminal">Open Terminal</li>
-            <li class="context-menu-item" data-action="open-file-explorer">Open File Explorer</li>
-            <div class="context-menu-divider"></div>
-            <li class="context-menu-item" data-action="settings">Settings</li>
-        `;
-
-        contextMenu.style.left = `${x}px`;
-        contextMenu.style.top = `${y}px`;
-        contextMenu.classList.remove('hidden');
-
-        menuList.querySelectorAll('.context-menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const action = e.target.dataset.action;
-                this.handleContextMenuAction(action);
-                this.hideContextMenu();
-            });
-        });
-    }
-
-    hideContextMenu() {
-        const contextMenu = document.getElementById('context-menu');
-        contextMenu.classList.add('hidden');
-    }
-
-    handleContextMenuAction(action) {
-        switch (action) {
-            case 'refresh':
-                location.reload();
-                break;
-            case 'open-terminal':
-                eventBus.publish(EVENTS.APP_LAUNCH_REQUESTED, { appName: 'terminal', source: 'context-menu' });
-                break;
-            case 'open-file-explorer':
-                eventBus.publish(EVENTS.APP_LAUNCH_REQUESTED, { appName: 'file-explorer', source: 'context-menu' });
-                break;
-            case 'settings':
-                eventBus.publish(EVENTS.APP_LAUNCH_REQUESTED, { appName: 'settings', source: 'context-menu' });
-                break;
-        }
-    }
-
     handleKeyboardShortcuts(e) {
+        if (e.altKey && e.key === 'Tab') {
+            e.preventDefault();
+            this.switchWindow();
+            return;
+        }
+
         if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
             e.preventDefault();
             const activeWindowId = state.get('activeWindowId');
@@ -171,10 +116,29 @@ class NexusShell {
         }
 
         if (e.key === 'Escape') {
-            this.hideContextMenu();
+            this.contextMenu?.close();
             if (state.get('startMenuOpen')) {
                 this.taskbar.closeStartMenu();
             }
+        }
+    }
+
+    switchWindow() {
+        const windows = state.get('windows');
+        if (!windows || windows.length === 0) return;
+
+        const visible = windows.filter(w => !w.isMinimized);
+        const list = (visible.length > 0 ? visible : windows).slice().sort((a, b) => a.zIndex - b.zIndex);
+
+        const activeId = state.get('activeWindowId');
+        const currentIndex = list.findIndex(w => w.id === activeId);
+        const nextIndex = currentIndex === -1 ? list.length - 1 : (currentIndex + 1) % list.length;
+        const next = list[nextIndex];
+
+        if (next.isMinimized) {
+            this.windowManager.restoreWindow(next.id);
+        } else {
+            this.windowManager.focusWindow(next.id);
         }
     }
 
