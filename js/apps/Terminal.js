@@ -2,6 +2,8 @@ import state from '../core/State.js';
 import eventBus, { EVENTS } from '../core/EventBus.js';
 import storage from '../core/Storage.js';
 import fileSystem from '../managers/FileSystem.js';
+import { getWallpaperEntries } from '../assets/wallpaperCatalog.js';
+import { isValidHexColor, normalizeWallpaperConfig } from '../core/wallpaper.js';
 
 function formatTimestamp(date = new Date()) {
     const h = String(date.getHours()).padStart(2, '0');
@@ -42,7 +44,7 @@ function nodeIcon(type) {
 }
 
 const TerminalApp = {
-    mount({ container }) {
+    mount({ container, windowId }) {
         const root = document.createElement('div');
         root.className = 'app-terminal';
         root.innerHTML = `
@@ -84,11 +86,23 @@ const TerminalApp = {
 
             switch (cmd) {
                 case 'help': {
-                    writeLine('Commands: help, clear, echo, date, whoami, pwd, ls, cd, mkdir, touch, rm, open, close, theme, wallpaper, stats');
+                    writeLine('Commands: help, clear, cls, exit, echo, date, whoami, pwd, ls, cd, mkdir, touch, rm, open, close, theme, wallpaper, stats');
                     break;
                 }
                 case 'clear': {
                     output.innerHTML = '';
+                    break;
+                }
+                case 'cls': {
+                    output.innerHTML = '';
+                    break;
+                }
+                case 'exit': {
+                    if (!windowId) {
+                        writeLine('Cannot exit: missing window id', 'error');
+                        break;
+                    }
+                    eventBus.publish(EVENTS.WINDOW_CLOSE_REQUESTED, { windowId, source: 'terminal-exit' });
                     break;
                 }
                 case 'echo': {
@@ -193,12 +207,81 @@ const TerminalApp = {
                     break;
                 }
                 case 'wallpaper': {
-                    const value = args[0];
-                    if (!value) {
-                        writeLine('Usage: wallpaper <aurora|sunset|nebula|url>', 'error');
+                    if (args.length === 0) {
+                        const current = state.get('wallpaper');
+                        const normalized = normalizeWallpaperConfig(current);
+                        if (normalized.type === 'image') writeLine(`Current wallpaper: image ${normalized.id ?? normalized.src}`);
+                        if (normalized.type === 'url') writeLine(`Current wallpaper: url ${normalized.url || '(empty)'}`);
+                        if (normalized.type === 'solid') writeLine(`Current wallpaper: solid ${normalized.color}`);
+                        if (normalized.type === 'gradient') writeLine(`Current wallpaper: gradient ${normalized.from} -> ${normalized.to} (${normalized.direction})`);
+                        writeLine('Usage:', 'info');
+                        writeLine('  wallpaper image [random|<id>]', 'info');
+                        writeLine('  wallpaper url <https://...>', 'info');
+                        writeLine('  wallpaper solid <#hex>', 'info');
+                        writeLine('  wallpaper gradient <#from> <#to> [direction]', 'info');
+                        writeLine('  wallpaper <value>  (back-compat: url/path/id)', 'info');
                         break;
                     }
-                    state.setState({ wallpaper: value });
+
+                    const mode = String(args[0] ?? '').toLowerCase();
+
+                    if (mode === 'image' || mode === 'img') {
+                        const choice = args[1] ?? 'random';
+                        if (String(choice).toLowerCase() === 'random') {
+                            const entries = getWallpaperEntries();
+                            if (entries.length === 0) {
+                                writeLine('No wallpapers available in catalog', 'error');
+                                break;
+                            }
+                            const picked = entries[Math.floor(Math.random() * entries.length)];
+                            state.setState({ wallpaper: { type: 'image', src: picked.src, id: picked.id } });
+                            writeLine(`Wallpaper set to image ${picked.id}`, 'success');
+                            break;
+                        }
+                        const normalized = normalizeWallpaperConfig(choice);
+                        state.setState({ wallpaper: { type: 'image', src: normalized.src, id: normalized.id ?? normalized.src } });
+                        writeLine(`Wallpaper set to image ${normalized.id ?? normalized.src}`, 'success');
+                        break;
+                    }
+
+                    if (mode === 'url') {
+                        const url = args.slice(1).join(' ').trim();
+                        if (!url) {
+                            writeLine('Usage: wallpaper url <https://...>', 'error');
+                            break;
+                        }
+                        state.setState({ wallpaper: { type: 'url', url } });
+                        writeLine('Wallpaper set to URL', 'success');
+                        break;
+                    }
+
+                    if (mode === 'solid' || mode === 'color') {
+                        const color = String(args[1] ?? '').trim();
+                        if (!isValidHexColor(color)) {
+                            writeLine('Usage: wallpaper solid <#hex> (example: #0b1020)', 'error');
+                            break;
+                        }
+                        state.setState({ wallpaper: { type: 'solid', color } });
+                        writeLine(`Wallpaper set to solid ${color}`, 'success');
+                        break;
+                    }
+
+                    if (mode === 'gradient') {
+                        const from = String(args[1] ?? '').trim();
+                        const to = String(args[2] ?? '').trim();
+                        const direction = String(args[3] ?? '').trim() || '135deg';
+                        if (!isValidHexColor(from) || !isValidHexColor(to)) {
+                            writeLine('Usage: wallpaper gradient <#from> <#to> [direction]', 'error');
+                            break;
+                        }
+                        state.setState({ wallpaper: { type: 'gradient', from, to, direction } });
+                        writeLine(`Wallpaper set to gradient ${from} -> ${to}`, 'success');
+                        break;
+                    }
+
+                    // Back-compat: allow raw value (url/path/id/etc)
+                    const rawValue = args.join(' ');
+                    state.setState({ wallpaper: normalizeWallpaperConfig(rawValue) });
                     writeLine('Wallpaper updated', 'success');
                     break;
                 }
