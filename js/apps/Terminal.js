@@ -195,7 +195,7 @@ const TerminalApp = {
                 case 'wallpaper': {
                     const value = args[0];
                     if (!value) {
-                        writeLine('Usage: wallpaper <default|gradient-1|...|url>', 'error');
+                        writeLine('Usage: wallpaper <aurora|sunset|nebula|url>', 'error');
                         break;
                     }
                     state.setState({ wallpaper: value });

@@ -20,12 +20,9 @@ const SettingsApp = {
                     <div class="settings-label">Wallpaper</div>
                     <div class="settings-control">
                         <select class="settings-select" data-setting="wallpaper">
-                            <option value="default">Default</option>
-                            <option value="gradient-1">Purple Dream</option>
-                            <option value="gradient-2">Pink Sunset</option>
-                            <option value="gradient-3">Ocean Blue</option>
-                            <option value="gradient-4">Emerald</option>
-                            <option value="gradient-5">Warm Sunrise</option>
+                            <option value="aurora">Aurora</option>
+                            <option value="sunset">Sunset</option>
+                            <option value="nebula">Nebula</option>
                         </select>
                     </div>
                 </div>
@@ -36,7 +33,8 @@ const SettingsApp = {
         const wallpaperSelect = root.querySelector('[data-setting="wallpaper"]');
 
         themeSelect.value = state.get('theme') ?? 'light';
-        wallpaperSelect.value = state.get('wallpaper') ?? 'default';
+        const savedWallpaper = state.get('wallpaper');
+        wallpaperSelect.value = (savedWallpaper === 'default' || savedWallpaper == null) ? 'aurora' : savedWallpaper;
 
         themeSelect.addEventListener('change', () => {
             state.setState({ theme: themeSelect.value });

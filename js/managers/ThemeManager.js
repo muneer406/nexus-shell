@@ -36,20 +36,34 @@ class ThemeManager {
 
     applyWallpaper(wallpaper) {
         const desktop = document.getElementById('desktop');
-        if (!wallpaper || wallpaper === 'default') {
-            desktop.style.backgroundImage = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-        } else if (wallpaper.startsWith('http') || wallpaper.startsWith('data:')) {
-            desktop.style.backgroundImage = `url(${wallpaper})`;
+        const value = String(wallpaper ?? '').trim();
+
+        const presets = {
+            // Image wallpapers (preferred)
+            'aurora': 'assets/wallpapers/aurora.svg',
+            'sunset': 'assets/wallpapers/sunset.svg',
+            'nebula': 'assets/wallpapers/nebula.svg',
+
+            // Back-compat values (older saved state)
+            'default': 'assets/wallpapers/aurora.svg',
+            'gradient-1': 'assets/wallpapers/aurora.svg',
+            'gradient-2': 'assets/wallpapers/sunset.svg',
+            'gradient-3': 'assets/wallpapers/nebula.svg',
+            'gradient-4': 'assets/wallpapers/aurora.svg',
+            'gradient-5': 'assets/wallpapers/sunset.svg',
+        };
+
+        if (!value) {
+            desktop.style.backgroundImage = `url(${presets.aurora})`;
+        } else if (value.startsWith('http') || value.startsWith('data:')) {
+            desktop.style.backgroundImage = `url(${value})`;
+        } else if (presets[value]) {
+            desktop.style.backgroundImage = `url(${presets[value]})`;
         } else {
-            const presets = {
-                'gradient-1': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                'gradient-2': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                'gradient-3': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                'gradient-4': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                'gradient-5': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-            };
-            desktop.style.backgroundImage = presets[wallpaper] || presets['gradient-1'];
+            // Treat unknown values as relative URLs
+            desktop.style.backgroundImage = `url(${value})`;
         }
+
         eventBus.publish(EVENTS.WALLPAPER_CHANGED, { wallpaper });
     }
 
@@ -63,12 +77,9 @@ class ThemeManager {
 
     getWallpaperPresets() {
         return [
-            { name: 'default', label: 'Default' },
-            { name: 'gradient-1', label: 'Purple Dream' },
-            { name: 'gradient-2', label: 'Pink Sunset' },
-            { name: 'gradient-3', label: 'Ocean Blue' },
-            { name: 'gradient-4', label: 'Emerald' },
-            { name: 'gradient-5', label: 'Warm Sunrise' },
+            { name: 'aurora', label: 'Aurora' },
+            { name: 'sunset', label: 'Sunset' },
+            { name: 'nebula', label: 'Nebula' },
         ];
     }
 }

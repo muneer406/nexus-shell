@@ -10,7 +10,7 @@ class State {
             fileSystem: this.initializeFileSystem(),
 
             theme: 'light',
-            wallpaper: 'default',
+            wallpaper: 'aurora',
 
             sessionStart: Date.now(),
             commandsExecuted: 0,
