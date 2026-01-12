@@ -300,7 +300,7 @@ Nexus Shell/
 
 1. **State Persistence**
 
-   - [ ] Auto-save state every 30 seconds
+   - [x] Auto-save state every 30 seconds
    - [ ] Save state on window close
    - [ ] Restore window positions on load
    - [ ] Restore open applications on startup

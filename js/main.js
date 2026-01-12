@@ -5,6 +5,8 @@ import Taskbar from './components/Taskbar.js';
 import ContextMenu from './components/ContextMenu.js';
 import WindowManager from './managers/WindowManager.js';
 import ThemeManager from './managers/ThemeManager.js';
+import { getWallpaperEntries } from './assets/wallpaperCatalog.js';
+import { normalizeWallpaperConfig } from './core/wallpaper.js';
 
 class NexusShell {
     constructor() {
@@ -17,6 +19,16 @@ class NexusShell {
     async init() {
         try {
             this.loadState();
+
+            // Randomize wallpaper on each start when using image wallpapers.
+            const normalized = normalizeWallpaperConfig(state.get('wallpaper'));
+            if (normalized.type === 'image') {
+                const entries = getWallpaperEntries();
+                if (entries.length > 0) {
+                    const picked = entries[Math.floor(Math.random() * entries.length)];
+                    state.setState({ wallpaper: { type: 'image', src: picked.src, id: picked.id } });
+                }
+            }
 
             this.taskbar = new Taskbar();
             this.windowManager = new WindowManager();

@@ -34,12 +34,30 @@ function buildCrumbs(path) {
     return crumbs;
 }
 
+function isImageFileName(name) {
+    return /\.(png|jpe?g|gif|webp|svg)$/i.test(String(name ?? ''));
+}
+
+function isProbablyUrlOrPath(value) {
+    const v = String(value ?? '').trim();
+    if (!v) return false;
+    return v.startsWith('http') || v.startsWith('data:') || v.includes('/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(v);
+}
+
 const FileExplorerApp = {
     mount({ container, windowId }) {
         const root = document.createElement('div');
         root.className = 'app-file-explorer no-select';
         root.innerHTML = `
             <div class="file-explorer-toolbar">
+                <div class="file-explorer-nav">
+                    <button class="nav-btn" type="button" data-nav="back" title="Back" aria-label="Back">←</button>
+                    <button class="nav-btn" type="button" data-nav="up" title="Up" aria-label="Up">↑</button>
+                    <button class="nav-btn" type="button" data-nav="home" title="Home" aria-label="Home">⌂</button>
+                </div>
+                <div class="file-explorer-path">
+                    <input class="path-input" type="text" spellcheck="false" autocomplete="off" aria-label="Path" />
+                </div>
                 <div class="file-explorer-breadcrumb"></div>
             </div>
             <div class="file-explorer-content">
@@ -51,6 +69,7 @@ const FileExplorerApp = {
                         <div class="file-preview-title"></div>
                         <button class="file-preview-close" type="button" aria-label="Close">×</button>
                     </div>
+                    <img class="file-preview-image hidden" alt="" />
                     <pre class="file-preview-body"></pre>
                 </div>
             </div>
@@ -58,9 +77,12 @@ const FileExplorerApp = {
 
         const breadcrumb = root.querySelector('.file-explorer-breadcrumb');
         const list = root.querySelector('.file-list');
+        const pathInput = root.querySelector('.path-input');
+        const navButtons = root.querySelectorAll('[data-nav]');
         const previewOverlay = root.querySelector('.file-preview-overlay');
         const previewTitle = root.querySelector('.file-preview-title');
         const previewBody = root.querySelector('.file-preview-body');
+        const previewImage = root.querySelector('.file-preview-image');
         const previewClose = root.querySelector('.file-preview-close');
 
         let selectedName = null;
@@ -77,6 +99,12 @@ const FileExplorerApp = {
             previewOverlay?.classList.add('hidden');
             if (previewTitle) previewTitle.textContent = '';
             if (previewBody) previewBody.textContent = '';
+            if (previewImage) {
+                previewImage.src = '';
+                previewImage.alt = '';
+                previewImage.classList.add('hidden');
+            }
+            previewBody?.classList.remove('hidden');
         };
 
         const openPreview = (name) => {
@@ -84,9 +112,24 @@ const FileExplorerApp = {
             if (!res.ok) {
                 previewTitle.textContent = name;
                 previewBody.textContent = res.error;
+                previewImage?.classList.add('hidden');
+                previewBody?.classList.remove('hidden');
             } else {
                 previewTitle.textContent = name;
-                previewBody.textContent = res.content || '(empty file)';
+
+                if (isImageFileName(name) && isProbablyUrlOrPath(res.content)) {
+                    previewBody.textContent = '';
+                    previewBody?.classList.add('hidden');
+                    if (previewImage) {
+                        previewImage.alt = name;
+                        previewImage.src = String(res.content).trim();
+                        previewImage.classList.remove('hidden');
+                    }
+                } else {
+                    previewImage?.classList.add('hidden');
+                    previewBody?.classList.remove('hidden');
+                    previewBody.textContent = res.content || '(empty file)';
+                }
             }
             previewOverlay?.classList.remove('hidden');
         };
@@ -100,13 +143,15 @@ const FileExplorerApp = {
             const cwd = fileSystem.pwd();
             const crumbs = buildCrumbs(cwd);
 
+            if (pathInput) pathInput.value = cwd;
+
             breadcrumb.innerHTML = '';
             crumbs.forEach((c, idx) => {
                 const item = document.createElement('span');
                 item.className = 'breadcrumb-item';
                 item.textContent = c.label;
                 item.addEventListener('click', () => {
-                    fileSystem.cd(c.path);
+                    fileSystem.navigateTo(c.path);
                 });
                 breadcrumb.appendChild(item);
 
@@ -194,7 +239,7 @@ const FileExplorerApp = {
 
                 cell.addEventListener('dblclick', () => {
                     if (item.type === 'directory') {
-                        fileSystem.cd(item.name);
+                        fileSystem.navigateTo(item.name);
                         selectedName = null;
                         editingName = null;
                         closePreview();
@@ -277,6 +322,34 @@ const FileExplorerApp = {
 
         const unsub = state.subscribe('currentDirectory', () => {
             render();
+        });
+
+        navButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.nav;
+                if (action === 'back') {
+                    fileSystem.goBack();
+                    return;
+                }
+                if (action === 'up') {
+                    fileSystem.navigateTo('..');
+                    return;
+                }
+                if (action === 'home') {
+                    fileSystem.navigateTo('/home');
+                }
+            });
+        });
+
+        pathInput?.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            const next = String(pathInput.value ?? '').trim();
+            if (!next) return;
+            const res = fileSystem.navigateTo(next);
+            if (!res.ok) {
+                alert(res.error);
+                render();
+            }
         });
 
         container.innerHTML = '';

@@ -19,7 +19,21 @@ If you prefer, you can still try opening `index.html` directly, but some browser
 - Taskbar with clock + start menu
 - Window lifecycle: create, focus (z-index), minimize, maximize/restore, close
 - State store with persistence (theme, wallpaper, mock file system, terminal history)
+- Settings: light/dark UI chrome, wallpaper picker (images with previews, solid, gradient, custom URL)
 - Pub/sub event bus (with a launch request vs launch notification split)
+
+Apps included:
+
+- Terminal
+- File Explorer
+- System Monitor
+- Settings
+
+File Explorer highlights:
+
+- Back/Up/Home navigation + editable path bar
+- Right-click actions (Open/Rename/Delete)
+- Image preview support for image files that point to a URL/path
 
 ## Architecture (high level)
 
@@ -46,6 +60,7 @@ Nexus Shell/
 │   ├── core/
 │   │   ├── State.js
 │   │   ├── EventBus.js
+│   │   ├── wallpaper.js
 │   │   └── Storage.js
 │   ├── managers/
 │   │   ├── WindowManager.js
@@ -53,7 +68,7 @@ Nexus Shell/
 │   ├── components/
 │   │   ├── Window.js
 │   │   └── Taskbar.js
-│   ├── apps/                # (planned) app modules
+│   ├── apps/                # app modules
 │   └── main.js
 ├── assets/
 ├── DOCUMENTATION.md
@@ -62,7 +77,7 @@ Nexus Shell/
 
 ## Notes
 
-- App content is still placeholder/in-progress; the shell (windowing/taskbar) is the foundation.
+- This is still a learning project, but the core apps (Terminal/File Explorer/Settings/System Monitor) are functional and evolving.
 
 ## License
 

@@ -334,6 +334,7 @@ class Window {
         this.content.innerHTML = '';
 
         const appType = this.data.appType;
+        this.content.classList.toggle('no-padding', appType === 'terminal');
         try {
             const app = await loadAppModule(appType);
             if (!app || typeof app.mount !== 'function') {

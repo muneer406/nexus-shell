@@ -1,5 +1,6 @@
 import state from '../core/State.js';
 import eventBus, { EVENTS } from '../core/EventBus.js';
+import { applyWallpaperToDesktop } from '../core/wallpaper.js';
 
 class ThemeManager {
     constructor() {
@@ -19,14 +20,11 @@ class ThemeManager {
     }
 
     applyTheme(themeName) {
-        if (themeName === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
+        const theme = themeName === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
 
-        this.currentTheme = themeName;
-        eventBus.publish(EVENTS.THEME_CHANGED, { theme: themeName });
+        this.currentTheme = theme;
+        eventBus.publish(EVENTS.THEME_CHANGED, { theme });
     }
 
     toggleTheme() {
@@ -36,34 +34,7 @@ class ThemeManager {
 
     applyWallpaper(wallpaper) {
         const desktop = document.getElementById('desktop');
-        const value = String(wallpaper ?? '').trim();
-
-        const presets = {
-            // Image wallpapers (preferred)
-            'aurora': 'assets/wallpapers/aurora.svg',
-            'sunset': 'assets/wallpapers/sunset.svg',
-            'nebula': 'assets/wallpapers/nebula.svg',
-
-            // Back-compat values (older saved state)
-            'default': 'assets/wallpapers/aurora.svg',
-            'gradient-1': 'assets/wallpapers/aurora.svg',
-            'gradient-2': 'assets/wallpapers/sunset.svg',
-            'gradient-3': 'assets/wallpapers/nebula.svg',
-            'gradient-4': 'assets/wallpapers/aurora.svg',
-            'gradient-5': 'assets/wallpapers/sunset.svg',
-        };
-
-        if (!value) {
-            desktop.style.backgroundImage = `url(${presets.aurora})`;
-        } else if (value.startsWith('http') || value.startsWith('data:')) {
-            desktop.style.backgroundImage = `url(${value})`;
-        } else if (presets[value]) {
-            desktop.style.backgroundImage = `url(${presets[value]})`;
-        } else {
-            // Treat unknown values as relative URLs
-            desktop.style.backgroundImage = `url(${value})`;
-        }
-
+        applyWallpaperToDesktop(desktop, wallpaper);
         eventBus.publish(EVENTS.WALLPAPER_CHANGED, { wallpaper });
     }
 
@@ -76,11 +47,7 @@ class ThemeManager {
     }
 
     getWallpaperPresets() {
-        return [
-            { name: 'aurora', label: 'Aurora' },
-            { name: 'sunset', label: 'Sunset' },
-            { name: 'nebula', label: 'Nebula' },
-        ];
+        return [];
     }
 }
 

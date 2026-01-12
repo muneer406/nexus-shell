@@ -54,6 +54,10 @@ Key files:
 - `js/apps/Terminal.js`
 - `js/apps/FileExplorer.js`
 
+Notes:
+
+- Some apps can request a “flush” layout (no window content padding). Terminal uses this so the dark terminal surface reaches the window border.
+
 ### 3.5 Context Menus
 
 - The desktop right-click menu is implemented as a component to keep `main.js` smaller.
@@ -90,9 +94,40 @@ Current capabilities:
 - Navigation (`cd`, `navigateTo`, `goBack`, `pwd`)
 - CRUD (`mkdir`, `touch`, `rm`, `rename`)
 
+File Explorer usage:
+
+- Uses `navigateTo()` for navigation so “Back” works.
+- Includes a path bar (type a path and press Enter).
+- Supports previewing image files when their file content is a URL/path.
+
 Key file:
 
 - `js/managers/FileSystem.js`
+
+### 3.7 Wallpapers & Theming
+
+- Theme (`light`/`dark`) controls UI chrome via CSS variables (window/taskbar/menu colors).
+- Wallpaper is a structured config object stored in state and applied to the desktop.
+
+Key files:
+
+- `js/core/wallpaper.js` (normalization + apply-to-DOM)
+- `js/assets/wallpaperCatalog.js` (image entries used by Settings)
+- `js/managers/ThemeManager.js` (applies theme + wallpaper)
+
+Wallpaper config shape (normalized):
+
+- `{ type: 'image', src, id }`
+- `{ type: 'url', url }`
+- `{ type: 'solid', color }`
+- `{ type: 'gradient', direction, from, to }`
+
+Notes:
+
+- Backward compatibility: older saved wallpaper strings are normalized into the new object form.
+- Robustness: image/URL wallpapers are preloaded; on load failure the desktop falls back to the default local wallpaper.
+- UX: when the current wallpaper type is `image`, Nexus Shell randomizes the image on startup. Switching “Wallpaper type” to Images in Settings also picks a random image.
+- “Dynamic listing” in a static browser app cannot read directories at runtime, so Settings reads from a catalog module (which can be generated/updated when assets change).
 
 ## 4. UI Direction
 
@@ -100,7 +135,7 @@ The UI is styled to feel like a modern glass/acrylic OS:
 
 - Translucent, blurred taskbar
 - Rounded windows with soft shadows
-- Gradient “wallpaper” background
+- Wallpaper-driven desktop background (images/solid/gradient/URL)
 
 Key files:
 

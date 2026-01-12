@@ -1,3 +1,4 @@
+/* Default to dark UI chrome; wallpapers are separate. */
 :root {
   --primary-bg: #0b1020;
   --secondary-bg: rgba(255, 255, 255, 0.7);
@@ -60,10 +61,36 @@
 
 [data-theme="dark"] {
   --primary-bg: #0b1020;
+  --secondary-bg: rgba(255, 255, 255, 0.7);
+  --tertiary-bg: rgba(255, 255, 255, 0.5);
   --primary-text: rgba(255, 255, 255, 0.92);
   --secondary-text: rgba(255, 255, 255, 0.68);
   --accent-color: #6ea8ff;
   --accent-hover: #8fbaff;
+}
+
+[data-theme="light"] {
+  --primary-bg: #f5f7ff;
+  --secondary-bg: rgba(0, 0, 0, 0.06);
+  --tertiary-bg: rgba(0, 0, 0, 0.04);
+  --primary-text: rgba(0, 0, 0, 0.86);
+  --secondary-text: rgba(0, 0, 0, 0.62);
+  --accent-color: #3b7cff;
+  --accent-hover: #2f6cf2;
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.55);
+
+  --border-color: rgba(0, 0, 0, 0.12);
+  --window-border: rgba(0, 0, 0, 0.12);
+  --titlebar-bg: rgba(0, 0, 0, 0.04);
+  --titlebar-hover: rgba(0, 0, 0, 0.06);
+
+  --taskbar-bg: rgba(255, 255, 255, 0.45);
+  --taskbar-text: rgba(0, 0, 0, 0.86);
+  --taskbar-hover: rgba(0, 0, 0, 0.06);
 }
 
 /* ==================== RESET & BASE STYLES ==================== */
