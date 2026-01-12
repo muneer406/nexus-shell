@@ -48,8 +48,7 @@ Nexus Shell/
 - [x] Create project folder structure
 - [x] Set up base HTML file
 - [x] Create CSS files with base styles
-- [ ] Initialize Git repository
- - [x] Initialize Git repository
+- [x] Initialize Git repository
 
 ### 📦 Phase 1: Core Foundation
 
@@ -151,7 +150,7 @@ Nexus Shell/
 
    - [x] Create ContextMenu.js component
    - [x] Implement right-click detection
-   - [ ] Show contextual options based on target
+   - [x] Show contextual options based on target
    - [x] Add close-on-outside-click behavior
 
 4. **Keyboard Shortcuts**
@@ -193,8 +192,8 @@ Nexus Shell/
    - [x] Create file/folder icons
 
 4. **File Actions**
-   - [ ] Right-click context menu for files
-   - [ ] Implement "Open", "Rename", "Delete"
+   - [x] Right-click context menu for files
+   - [x] Implement "Open", "Rename", "Delete"
    - [ ] Add drag-and-drop file moving (stretch)
    - [ ] Create file search functionality
 

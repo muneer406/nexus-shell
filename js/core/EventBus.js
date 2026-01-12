@@ -78,6 +78,8 @@ export const EVENTS = {
     START_MENU_TOGGLED: 'ui:startMenuToggled',
     CONTEXT_MENU_OPENED: 'ui:contextMenuOpened',
     CONTEXT_MENU_CLOSED: 'ui:contextMenuClosed',
+    CONTEXT_MENU_REQUESTED: 'ui:contextMenuRequested',
+    CONTEXT_MENU_ACTION: 'ui:contextMenuAction',
     THEME_CHANGED: 'ui:themeChanged',
     WALLPAPER_CHANGED: 'ui:wallpaperChanged',
 

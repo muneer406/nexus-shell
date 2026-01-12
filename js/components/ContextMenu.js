@@ -12,10 +12,26 @@ class ContextMenu {
     init() {
         if (!this.contextMenu || !this.menuList || !this.desktop) return;
 
+        eventBus.subscribe(EVENTS.CONTEXT_MENU_REQUESTED, ({ x, y, items, context }) => {
+            this.openMenu(x, y, items, context);
+        });
+
         this.desktop.addEventListener('contextmenu', (e) => {
             if (e.target === this.desktop || e.target.classList.contains('desktop-icons')) {
                 e.preventDefault();
-                this.openDesktopMenu(e.clientX, e.clientY);
+                this.openMenu(
+                    e.clientX,
+                    e.clientY,
+                    [
+                        { type: 'item', label: 'Refresh', action: 'refresh' },
+                        { type: 'separator' },
+                        { type: 'item', label: 'Open Terminal', action: 'open-terminal' },
+                        { type: 'item', label: 'Open File Explorer', action: 'open-file-explorer' },
+                        { type: 'separator' },
+                        { type: 'item', label: 'Settings', action: 'settings' },
+                    ],
+                    { type: 'desktop' }
+                );
             }
         });
 
@@ -32,39 +48,69 @@ class ContextMenu {
         });
     }
 
-    openDesktopMenu(x, y) {
+    openMenu(x, y, items = [], context = null) {
         if (!this.menuList || !this.contextMenu) return;
 
-        this.menuList.innerHTML = `
-            <li class="context-menu-item" data-action="refresh">Refresh</li>
-            <div class="context-menu-divider"></div>
-            <li class="context-menu-item" data-action="open-terminal">Open Terminal</li>
-            <li class="context-menu-item" data-action="open-file-explorer">Open File Explorer</li>
-            <div class="context-menu-divider"></div>
-            <li class="context-menu-item" data-action="settings">Settings</li>
-        `;
+        const normalizedItems = Array.isArray(items) ? items : [];
+        this.menuContext = context ?? null;
 
-        const safeX = Math.max(8, Math.min(x, window.innerWidth - 220));
-        const safeY = Math.max(8, Math.min(y, window.innerHeight - 220));
+        this.menuList.innerHTML = '';
+
+        normalizedItems.forEach((item) => {
+            if (!item) return;
+            if (item.type === 'separator') {
+                const divider = document.createElement('div');
+                divider.className = 'context-menu-divider';
+                this.menuList.appendChild(divider);
+                return;
+            }
+
+            if (item.type !== 'item') return;
+
+            const li = document.createElement('li');
+            li.className = 'context-menu-item';
+            li.textContent = item.label ?? 'Action';
+            li.dataset.action = item.action ?? '';
+            if (item.disabled) {
+                li.classList.add('disabled');
+                li.setAttribute('aria-disabled', 'true');
+            }
+            this.menuList.appendChild(li);
+        });
+
+        this.contextMenu.classList.remove('hidden');
+
+        const menuW = this.contextMenu.offsetWidth || 220;
+        const menuH = this.contextMenu.offsetHeight || 260;
+        const safeX = Math.max(8, Math.min(x, window.innerWidth - menuW - 8));
+        const safeY = Math.max(8, Math.min(y, window.innerHeight - menuH - 8));
 
         this.contextMenu.style.left = `${safeX}px`;
         this.contextMenu.style.top = `${safeY}px`;
-        this.contextMenu.classList.remove('hidden');
 
-        this.menuList.querySelectorAll('.context-menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const action = e.target.dataset.action;
-                this.handleAction(action);
+        this.menuList.querySelectorAll('.context-menu-item').forEach(itemEl => {
+            itemEl.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                if (!action) return;
+                if (e.currentTarget.classList.contains('disabled')) return;
+
+                const ctx = this.menuContext;
+                this.handleAction(action, ctx);
+                eventBus.publish(EVENTS.CONTEXT_MENU_ACTION, { action, context: ctx });
                 this.close();
             });
         });
+
+        eventBus.publish(EVENTS.CONTEXT_MENU_OPENED, { context: this.menuContext });
     }
 
     close() {
         this.contextMenu?.classList.add('hidden');
+        this.menuContext = null;
+        eventBus.publish(EVENTS.CONTEXT_MENU_CLOSED, {});
     }
 
-    handleAction(action) {
+    handleAction(action, context) {
         switch (action) {
             case 'refresh':
                 location.reload();

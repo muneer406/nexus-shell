@@ -62,6 +62,11 @@ Key file:
 
 - `js/components/ContextMenu.js`
 
+Apps can request context menus without importing the component directly:
+
+- Publish `EVENTS.CONTEXT_MENU_REQUESTED` with `{ x, y, items, context }`
+- Listen for `EVENTS.CONTEXT_MENU_ACTION` with `{ action, context }`
+
 ### 3.4 Persistence
 
 - Preferences (theme, wallpaper), file system mock, and terminal history are persisted to `localStorage`.
