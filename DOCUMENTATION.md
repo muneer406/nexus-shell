@@ -76,7 +76,7 @@ Apps can request context menus without importing the component directly:
 - Publish `EVENTS.CONTEXT_MENU_REQUESTED` with `{ x, y, items, context }`
 - Listen for `EVENTS.CONTEXT_MENU_ACTION` with `{ action, context }`
 
-### 3.4 Persistence
+### 3.6 Persistence
 
 - Preferences (theme, wallpaper), virtual file system, terminal history, and window layout are persisted to `localStorage`.
 - Window restore includes: open windows, positions/sizes, minimize/maximize state, z-index ordering, and the active window.
@@ -86,11 +86,12 @@ Key files:
 - `js/core/State.js`
 - `js/core/Storage.js`
 
-Note:
+Notes:
 
-- The file system and terminal history are currently foundation data structures used by future apps.
+- The virtual file system is used by both Terminal and File Explorer.
+- Window layout persistence restores open apps and their layout on refresh.
 
-### 3.6 Virtual File System
+### 3.7 Virtual File System
 
 - A lightweight virtual file system is implemented as a manager over the state tree.
 
@@ -110,7 +111,7 @@ Key file:
 
 - `js/managers/FileSystem.js`
 
-### 3.7 Wallpapers & Theming
+### 3.8 Wallpapers & Theming
 
 - Theme (`light`/`dark`) controls UI chrome via CSS variables (window/taskbar/menu colors).
 - Wallpaper is a structured config object stored in state and applied to the desktop.
@@ -157,4 +158,4 @@ Documentation is updated as features evolve:
 - `PROJECT_PLAN.md` tracks phases and MVP checklist.
 - `README.md` stays user-facing (how to run, what works).
 
-Last Updated: 2026-01-12
+Last Updated: 2026-01-13

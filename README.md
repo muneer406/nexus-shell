@@ -18,9 +18,9 @@ If you prefer, you can still try opening `index.html` directly, but some browser
 - Desktop + acrylic/glass UI styling
 - Taskbar with clock + start menu
 - Window lifecycle: create, focus (z-index), minimize, maximize/restore, close
-- State store with persistence (theme, wallpaper, mock file system, terminal history)
+- State store with persistence (theme, wallpaper, window layout/restore, virtual file system, terminal history)
 - Settings: light/dark UI chrome, wallpaper picker (images with previews, solid, gradient, custom URL)
-- Pub/sub event bus (with a launch request vs launch notification split)
+- Pub/sub event bus (request vs notification events for app launches and window actions)
 
 Apps included:
 
@@ -41,6 +41,7 @@ File Explorer highlights:
 - `EventBus` is used for cross-component communication.
   - `EVENTS.APP_LAUNCH_REQUESTED` triggers app launching.
   - `EVENTS.APP_LAUNCHED` is emitted after a window is created.
+  - Window UI uses `EVENTS.WINDOW_*_REQUESTED` to avoid loops.
 - `WindowManager` owns window creation and state sync.
 - `Window` renders and handles drag + chrome controls.
 
@@ -62,13 +63,18 @@ Nexus Shell/
 │   │   ├── EventBus.js
 │   │   ├── wallpaper.js
 │   │   └── Storage.js
+│   ├── assets/
+│   │   └── wallpaperCatalog.js
 │   ├── managers/
 │   │   ├── WindowManager.js
-│   │   └── ThemeManager.js
+│   │   ├── ThemeManager.js
+│   │   └── FileSystem.js
 │   ├── components/
 │   │   ├── Window.js
-│   │   └── Taskbar.js
+│   │   ├── Taskbar.js
+│   │   └── ContextMenu.js
 │   ├── apps/                # app modules
+│   │   └── registry.js
 │   └── main.js
 ├── assets/
 ├── DOCUMENTATION.md
